@@ -6,9 +6,12 @@ from pylab import grid
 import matplotlib.pyplot as plt
 from pylab import savefig
 import pylab
+plt.style.use(['science','ieee', 'grid', 'no-latex'])
 
+plt.rcParams['figure.figsize'] = 10, 5
+plt.rcParams['axes.labelsize'] = 22
 
-def plot_acquisition(bounds, input_dim, model, Xdata, Ydata, acquisition_function, suggested_sample,
+def plot_acquisition(f_pred, bounds, input_dim, model, Xdata, Ydata, acquisition_function, suggested_sample,
                      filename=None, label_x=None, label_y=None, color_by_step=True):
     '''
     Plots of the model and the acquisition function in 1D and 2D examples.
@@ -61,26 +64,26 @@ def plot_acquisition(bounds, input_dim, model, Xdata, Ydata, acquisition_functio
         m, v = model.predict(x_grid)
 
 
-        model.plot_density(bounds[0], alpha=.5)
-
+        model.plot_density(bounds[0], alpha=.85)
+        plt.plot(x_grid, f_pred,'--', lw=5, color = '#00E623', label = r"$\bf{f_{p}}$")
         plt.plot(x_grid, m, 'k-',lw=1,alpha = 0.6)
         plt.plot(x_grid, m-1.96*np.sqrt(v), 'k-', alpha = 0.2)
         plt.plot(x_grid, m+1.96*np.sqrt(v), 'k-', alpha=0.2)
 
         plt.plot(Xdata, Ydata, 'r.', markersize=10)
-        plt.axvline(x=suggested_sample[len(suggested_sample)-1],color='r')
+        plt.axvline(x=suggested_sample[len(suggested_sample)-1],color='#690000',linewidth = 3, linestyle =":",label =r'$\bf{Suggestion\ from\ \alpha(x)}$')
         factor = max(m+1.96*np.sqrt(v))-min(m-1.96*np.sqrt(v))
 
-        plt.plot(x_grid,0.2*factor*acqu_normalized-abs(min(m-1.96*np.sqrt(v)))-0.25*factor, 'r-',lw=2,label ='Acquisition (arbitrary units)')
+        plt.plot(x_grid,0.2*factor*acqu_normalized-abs(min(m-1.96*np.sqrt(v)))-0.25*factor,'-.', color='#F20000',lw=3,label =r'$\bf{\alpha(x)}$')
         plt.xlabel(label_x)
         plt.ylabel(label_y)
-        plt.ylim(min(m-1.96*np.sqrt(v))-0.25*factor,  max(m+1.96*np.sqrt(v))+0.05*factor)
-        plt.axvline(x=suggested_sample[len(suggested_sample)-1],color='r')
-        plt.legend(loc='upper left')
+        plt.legend(loc='upper center', bbox_to_anchor=(0.5, -0.2),fancybox=True, shadow=True, ncol=5,prop={'size': 13,'weight':'bold'}).get_texts()[3].set_text('')
 
 
         if filename!=None:
-            savefig(filename)
+            savefig(f"{filename}.eps", format = 'eps', dpi=600)
+            plt.gca().get_legend().remove()
+            savefig(f"{filename}.png", dpi = 600)
         else:
             plt.show()
 
