@@ -6,10 +6,7 @@ from pylab import grid
 import matplotlib.pyplot as plt
 from pylab import savefig
 import pylab
-plt.style.use(['science','ieee', 'grid', 'no-latex'])
 
-plt.rcParams['figure.figsize'] = 10, 5
-plt.rcParams['axes.labelsize'] = 22
 
 def plot_acquisition(f_pred, bounds, input_dim, model, Xdata, Ydata, acquisition_function, suggested_sample,
                      filename=None, label_x=None, label_y=None, color_by_step=True):
